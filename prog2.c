@@ -36,6 +36,10 @@ int main(int argc, char *argv[])
    write (fd, buf, SIZE-2);
 
    sleep (10);
+   if (fcntl (fd, F_UNLCK) < 0) {
+      perror ("no way lock error");
+      exit (1);
+   }
 
    close(fd);
 

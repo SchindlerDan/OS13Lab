@@ -13,6 +13,7 @@ int main(int argc, char *argv[])
 {
    struct flock fileLock;
    int fd;
+   FILE* myFile;
    char buf[SIZE] = "// is this Sample Program 1?";
 
    if (argc < 2) {
@@ -28,14 +29,20 @@ int main(int argc, char *argv[])
    fileLock.l_whence = SEEK_SET;
    fileLock.l_start = 0;
    fileLock.l_len = 0;
-   if (fcntl (fd, F_SETLK, &fileLock) < 0) {
+   if (fcntl (fd, F_SETLKW, &fileLock) < 0) {
       perror ("no way");
       exit (1);
    }
 
-   write (fd, buf, SIZE-2);
+   //write (fd, buf, SIZE-2);
+   myFile = fopen(argv[1], "r");
+   printf("\n %s \n", fgets(buf, sizeof(buf), myFile));
 
    sleep (10);
+   if (fcntl (fd, F_UNLCK) < 0) {
+      perror ("no way lock error");
+      exit (1);
+   }
 
    close(fd);
 
